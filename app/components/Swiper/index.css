@@ -1,0 +1,25 @@
+.coverflow .swiper-wrapper {
+  padding-bottom: 3rem;
+}
+
+/* .swiper {
+  width: 100%;
+  height: 400px;
+} */
+
+/* .swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: #99f6e4;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} */
+
+.swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
