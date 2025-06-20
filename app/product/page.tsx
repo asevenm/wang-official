@@ -9,7 +9,7 @@ import { catgories } from "./const";
 export default async function Page() {
   // const res = await fetchTypes();
   // console.log('res', res);
-  const renderBlock = (item:  ) => {
+  const renderBlock = (item:  any) => {
     return (
             <div key={item.key}>
               <div className="text-base mb-4 flex items-center">
@@ -21,21 +21,6 @@ export default async function Page() {
     )
   }
   return (
-    <>
-      {/* <Swiper /> */}
-      <div className="">
-        {catgories.map((item) => {
-          if (item.children) {
-            item.children.map((child) => {
-              return (
-
-              )
-            })
-          }
-          return (
-          )
-        })}
-      </div>
-    </>
+    <div>test</div>
   );
 }
