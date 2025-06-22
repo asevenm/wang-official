@@ -1,15 +1,15 @@
-FROM node:22 AS deps
+FROM node:lts-alpine AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN yarn
 
-FROM node:22 AS builder
+FROM node:lts-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN yarn run build
 
-FROM node:22 AS runner
+FROM node:lts-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV production
 COPY --from=builder /app/.next ./.next
