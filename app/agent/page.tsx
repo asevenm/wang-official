@@ -1,4 +1,3 @@
-import Swiper from "../components/Swiper";
 import Table from "../components/Table";
 
 const dataSource = [
@@ -37,7 +36,6 @@ const columns = [
 export default function Agent() {
   return (
     <div>
-      <Swiper />
       <Table dataSource={dataSource} columns={columns} rowKey="key" pagination={{ totalPages: 1}} />
     </div>
   )
