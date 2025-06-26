@@ -3,10 +3,14 @@ import { InstrumentItem, groupInstrumentsByType, GroupedInstrument } from './api
 
 // 获取所有试剂耗材数据
 export async function getReagentsData(): Promise<GroupedInstrument[]> {
-  const response = await serverHttp.get(`/instrument?typeType=2`)
-  const data = response.data
-  const groupedData = groupInstrumentsByType(data)
-  return groupedData
+  try {
+    const response = await serverHttp.get(`/instrument?typeType=2`)
+    const data = response.data
+    const groupedData = groupInstrumentsByType(data)
+    return groupedData
+  } catch(e) {
+    return []
+  }
   
   // 目前使用模拟数据
   return [

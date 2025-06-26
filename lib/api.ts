@@ -59,11 +59,19 @@ export function groupInstrumentsByType(apiData: InstrumentItem[]): GroupedInstru
 
 // 获取设备数据的函数
 export async function getEquipmentData(): Promise<GroupedInstrument[]> {
-  const response = await serverHttp.get(`/instrument?typeType=1`);
+  try {
+    const response = await serverHttp.get(`/instrument?typeType=1`);
+    const data = response.data
+    const groupedData = groupInstrumentsByType(data)
+    return groupedData
 
-  const transformedData = groupInstrumentsByType(response.data)
+  } catch(e) {
+    return []
+  }
+
+  // const transformedData = groupInstrumentsByType(response.data)
   
-  return transformedData
+  // return transformedData
 
   // 目前使用模拟数据
   return [
@@ -138,24 +146,33 @@ export async function getEquipmentData(): Promise<GroupedInstrument[]> {
 
 // 根据ID获取单个设备的详细信息
 export async function getEquipmentById(id: string): Promise<InstrumentItem | null> {
-  const response = await serverHttp.get(`/instrument/${id}`)
-  return response.data
+  try {
+    const response = await serverHttp.get(`/instrument/${id}`)
+    return response.data
+  } catch(e) {
+    return null
+  }
 }
 
 // 分页获取仪器设备
 export async function getEquipmentByPage(page = 1, pageSize = 3): Promise<InstrumentItem[]> {
+  try {
   const response = await serverHttp.post(`/instrument/list`, {
     page: {
       currentPage: page,
       pageSize,
     },
     typeType: 1
-  })
-  return response.data.list
+    })
+    return response.data.list
+  } catch(e) {
+    return []
+  }
 }
 
 // 分页获取试剂耗材
 export async function getReagentsByPage(page = 1, pageSize = 3): Promise<InstrumentItem[]> {
+  try {
   const response = await serverHttp.post(`/instrument/list`, {
     page: {
       currentPage: page,
@@ -163,5 +180,8 @@ export async function getReagentsByPage(page = 1, pageSize = 3): Promise<Instrum
     },
     typeType: 2
   })
-  return response.data.list
+    return response.data.list
+  } catch(e) {
+    return []
+  }
 }
