@@ -88,7 +88,7 @@ export default function Navigation() {
               {/* Logo */}
               <div className="flex-shrink-0 flex items-center">
                 <Link href="/" className="text-xl font-bold text-blue-600">
-                  王氏生物科技
+                  上海雷鼠仪器仪表有限公司
                 </Link>
               </div>
 

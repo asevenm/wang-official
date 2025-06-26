@@ -1,33 +1,12 @@
-// 定义试剂项目接口
-export interface ReagentItem {
-  id: string
-  name: string
-  description: string
-  specifications?: string[]
-  price?: string
-  stock?: string
-}
-
-// 定义子类别接口
-export interface ReagentSubcategory {
-  id: string
-  name: string
-  items: ReagentItem[]
-  description?: string
-}
-
-// 定义类别接口
-export interface ReagentCategory {
-  title: string
-  subcategories: ReagentSubcategory[]
-}
+import { serverHttp } from './serverRequest'
+import { InstrumentItem, groupInstrumentsByType, GroupedInstrument } from './api'
 
 // 获取所有试剂耗材数据
-export async function getReagentsData(): Promise<ReagentCategory[]> {
-  // 这里可以从外部API获取数据
-  // const res = await fetch('https://api.example.com/reagents', { next: { revalidate: 3600 } })
-  // if (!res.ok) throw new Error('获取试剂耗材数据失败')
-  // return res.json()
+export async function getReagentsData(): Promise<GroupedInstrument[]> {
+  const response = await serverHttp.get(`/instrument?typeType=2`)
+  const data = response.data
+  const groupedData = groupInstrumentsByType(data)
+  return groupedData
   
   // 目前使用模拟数据
   return [
@@ -140,28 +119,8 @@ export async function getReagentsData(): Promise<ReagentCategory[]> {
   ]
 }
 
-// 根据ID获取子类别详情
-export async function getSubcategoryById(id: string): Promise<ReagentSubcategory | null> {
-  const categories = await getReagentsData()
-  
-  for (const category of categories) {
-    const subcategory = category.subcategories.find(sub => sub.id === id)
-    if (subcategory) {
-      return subcategory
-    }
-  }
-  
-  return null
-}
-
-// 根据ID获取单个试剂项目
-export async function getReagentItemById(subcategoryId: string, itemId: string): Promise<ReagentItem | null> {
-  const subcategory = await getSubcategoryById(subcategoryId)
-  
-  if (subcategory) {
-    const item = subcategory.items.find(item => item.id === itemId)
-    return item || null
-  }
-  
-  return null
+export async function getReagentItemById(itemId: string): Promise<InstrumentItem | null> {
+  const response = await serverHttp.get(`/instrument/${itemId}`)
+  const data = response.data
+  return data
 }

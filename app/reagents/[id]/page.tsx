@@ -1,11 +1,12 @@
-import { getSubcategoryById } from '@/lib/reagentsApi'
+import { getReagentItemById } from '@/lib/reagentsApi'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import Image from 'next/image'
 
 export default async function ReagentSubcategoryDetail({ params }: { params: { id: string } }) {
-  const subcategory = await getSubcategoryById(params.id)
+  const item = await getReagentItemById(params.id)
   
-  if (!subcategory) {
+  if (!item) {
     notFound()
   }
 
@@ -19,59 +20,66 @@ export default async function ReagentSubcategoryDetail({ params }: { params: { i
           </svg>
           返回试剂耗材列表
         </Link>
-        
-        {/* 子类别标题和描述 */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-4">{subcategory.name}</h1>
-          {subcategory.description && (
-            <p className="text-gray-600">{subcategory.description}</p>
-          )}
-        </div>
-        
-        {/* 试剂项目列表 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {subcategory.items.map((item) => (
-            <div key={item.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="p-6">
-                <h2 className="text-xl font-bold mb-2">{item.name}</h2>
-                <p className="text-gray-600 mb-4">{item.description}</p>
-                
-                {item.specifications && item.specifications.length > 0 && (
-                  <div className="mb-4">
-                    <h3 className="text-lg font-semibold mb-2">规格参数</h3>
-                    <ul className="space-y-1 text-sm text-gray-600">
-                      {item.specifications.map((spec, index) => (
-                        <li key={index} className="flex items-start">
-                          <span className="text-blue-500 mr-2">•</span>
-                          {spec}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                
-                <div className="flex justify-between items-center mt-4">
-                  {item.price && (
-                    <span className="text-red-600 font-medium">{item.price}</span>
-                  )}
-                  {item.stock && (
-                    <span className={`text-sm ${item.stock === '现货' ? 'text-green-600' : 'text-orange-500'}`}>
-                      {item.stock}
-                    </span>
-                  )}
-                </div>
-                
-                <div className="mt-6 flex space-x-3">
-                  <button className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
-                    询价
-                  </button>
-                  <button className="flex-1 px-4 py-2 border border-blue-600 text-blue-600 rounded hover:bg-blue-50 transition">
-                    索取样品
-                  </button>
-                </div>
+
+        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+          <div className="md:flex">
+            <div className="md:flex-shrink-0 md:w-1/3">
+              <div className="relative w-full h-64 md:h-96">
+                <Image
+                  src={item.images?.[0]?.url || ''}
+                  alt={item.name}
+                  fill
+                  className="object-cover rounded-lg"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
               </div>
             </div>
-          ))}
+            <div className="p-8 md:w-2/3">
+              <h1 className="text-3xl font-bold mb-4">{item.name}</h1>
+              <p className="text-gray-700 mb-6">{item.desc}</p>
+              
+              {item.features && item.features.length > 0 && (
+                <div className="mb-6">
+                  <h2 className="text-xl font-semibold mb-2">功能特性</h2>
+                  <p className="text-gray-600">{item.features.map(feature => feature.text).join(', ')}</p>
+                </div>
+              )}
+              {item.models && item.models.length > 0 && (
+                <div>
+                  <h2 className="text-xl font-semibold mb-2">型号参数</h2>
+                  {item.models.map(model => (
+                    <div key={model.id}>
+                      <h3 className="text-lg font-semibold mb-2">{model.name}</h3>
+                      <div className="border rounded-lg overflow-hidden">
+                        <table className="min-w-full divide-y divide-gray-200">
+                          <tbody className="bg-white divide-y divide-gray-200">
+                            {model.params.map((spec, index) => {
+                              return (
+                                <tr key={index}>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 bg-gray-50 w-1/3">
+                                    {spec.name}
+                                  </td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {spec.value}
+                                  </td>
+                                </tr>
+                              )
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              <div className="mt-8">
+                <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                  联系咨询
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </main>

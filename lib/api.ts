@@ -1,25 +1,70 @@
-// 定义设备类型接口
-export interface EquipmentItem {
-  id: string
-  name: string
-  description: string
-  image: string
-  details?: string // 添加详情字段
-  specifications?: Record<string, string>[] // 添加规格字段
+import { serverHttp} from './serverRequest'
+
+export interface GroupedInstrument {
+  typeId: number
+  typeName: string
+  items: InstrumentItem[]
 }
 
-export interface EquipmentCategory {
-  title: string
-  items: EquipmentItem[]
+export interface ModelItem {
+  id: number
+  name: string
+  params: {name: string, value: string, id: number}[]
+}
+
+export interface FeatureItem {
+  id: number
+  text: string
+  images: string[]
+}
+
+export interface InstrumentItem {
+  id: number
+  name: string
+  desc: string
+  region: string
+  createTime: string
+  images?: {id: number, url: string}[]
+  models?: ModelItem[]
+  features?: FeatureItem[]
+  type: {
+    id: number
+    name: string
+  }
+}
+
+// 按类型分组的数据转换函数
+export function groupInstrumentsByType(apiData: InstrumentItem[]): GroupedInstrument[] {
+  // 使用 Map 进行分组
+  const groupedMap = new Map<number, GroupedInstrument>()
+
+  apiData.forEach((item: InstrumentItem) => {
+    const typeId = item.type.id
+    const typeName = item.type.name || '未知类型'
+    
+    if (!groupedMap.has(typeId)) {
+      groupedMap.set(typeId, {
+        typeId,
+        typeName,
+        items: []
+      })
+    }
+
+    const group = groupedMap.get(typeId)!
+    group.items.push(item);
+  })
+
+  return Array.from(groupedMap.values()).sort((a, b) => a.typeId - b.typeId)
 }
 
 // 获取设备数据的函数
-export async function getEquipmentData(): Promise<EquipmentCategory[]> {
-  // 这里可以从外部API获取数据
-  // const res = await fetch('https://api.example.com/equipment', { next: { revalidate: 3600 } })
-  // if (!res.ok) throw new Error('获取设备数据失败')
-  // return res.json()
+export async function getEquipmentData(): Promise<GroupedInstrument[]> {
+  const response = await serverHttp.get(`/instrument?typeType=1`);
+
+  const transformedData = groupInstrumentsByType(response.data)
   
+  return transformedData
+
   // 目前使用模拟数据
   return [
     {
@@ -92,15 +137,31 @@ export async function getEquipmentData(): Promise<EquipmentCategory[]> {
 }
 
 // 根据ID获取单个设备的详细信息
-export async function getEquipmentById(id: string): Promise<EquipmentItem | null> {
-  const categories = await getEquipmentData()
-  
-  for (const category of categories) {
-    const item = category.items.find(item => item.id === id)
-    if (item) {
-      return item
-    }
-  }
-  
-  return null
+export async function getEquipmentById(id: string): Promise<InstrumentItem | null> {
+  const response = await serverHttp.get(`/instrument/${id}`)
+  return response.data
+}
+
+// 分页获取仪器设备
+export async function getEquipmentByPage(page = 1, pageSize = 3): Promise<InstrumentItem[]> {
+  const response = await serverHttp.post(`/instrument/list`, {
+    page: {
+      currentPage: page,
+      pageSize,
+    },
+    typeType: 1
+  })
+  return response.data.list
+}
+
+// 分页获取试剂耗材
+export async function getReagentsByPage(page = 1, pageSize = 3): Promise<InstrumentItem[]> {
+  const response = await serverHttp.post(`/instrument/list`, {
+    page: {
+      currentPage: page,
+      pageSize,
+    },
+    typeType: 2
+  })
+  return response.data.list
 }
