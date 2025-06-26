@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 
 // 创建服务端专用的 axios 实例
 const serverRequest = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://wang-server:3001',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',

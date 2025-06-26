@@ -14,6 +14,8 @@ const nextConfig = {
     ],
   },
   async rewrites() {
+    const API_HOST = process.env.NEXT_PUBLIC_API_URL || 'http://wang-server:3001';
+
     return [
       {
         source: '/api/:path*',
@@ -21,7 +23,7 @@ const nextConfig = {
       },
       {
         source: '/uploads/:path*',
-        destination: 'http://localhost:3001/uploads/:path*',
+        destination: `${API_HOST}/uploads/:path*`,
       }
     ]
   }
