@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    trustedHeaders: true
+  },
   typescript: {
     ignoreBuildErrors: true,
   },

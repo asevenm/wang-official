@@ -83,32 +83,34 @@ export default async function Home() {
       </section>
 
       {/* Partners Section */}
-      <section>
-        <h2 className="text-3xl font-bold mb-8">合作单位</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {partners.length > 0 ? (
-            partners.map((partner: any) => (
-              <div key={partner.id} className="bg-white p-4 rounded-lg shadow flex items-center justify-center">
-                {partner.icon ? (
-                  <Image
-                    src={partner.icon}
-                    alt={partner.name}
-                    width={80}
-                    height={40}
-                    className="object-contain"
-                  />
-                ) : (
-                  <span className="text-center">{partner.name}</span>
-                )}
+      {partners.length > 0 && (
+        <section>
+          <h2 className="text-3xl font-bold mb-8">合作单位</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {partners.length > 0 ? (
+              partners.map((partner: any) => (
+                <div key={partner.id} className="bg-white p-4 rounded-lg shadow flex items-center justify-center">
+                  {partner.icon ? (
+                    <Image
+                      src={partner.icon}
+                      alt={partner.name}
+                      width={80}
+                      height={40}
+                      className="object-contain"
+                    />
+                  ) : (
+                    <span className="text-center">{partner.name}</span>
+                  )}
+                </div>
+              ))
+            ) : (
+              <div className="col-span-full text-center text-gray-500">
+                暂无合作单位信息
               </div>
-            ))
-          ) : (
-            <div className="col-span-full text-center text-gray-500">
-              暂无合作单位信息
-            </div>
-          )}
-        </div>
-      </section>
+            )}
+          </div>
+        </section>
+      )}
     </main>
   )
 }
