@@ -2,6 +2,8 @@ import { getEquipmentData, GroupedInstrument } from '@/lib/api'
 import ProductItem from '../components/ProductItem'
 import { logger } from '@/lib/logger'
 
+export const dynamic = 'force-dynamic';
+
 export default async function Equipment() {
   const equipmentCategories: GroupedInstrument[] = await getEquipmentData()
   logger.info('Equipment page data loaded successfully', {

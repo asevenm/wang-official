@@ -4,6 +4,8 @@ import { getPartners } from '../lib/partnersApi'
 import { getEquipmentByPage, getReagentsByPage } from '../lib/api'
 import { logger } from '../lib/logger'
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   // 服务端请求合作单位
   const partners = await getPartners()

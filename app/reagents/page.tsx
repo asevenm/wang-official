@@ -2,6 +2,8 @@ import { getReagentsData } from '@/lib/reagentsApi'
 import ProductItem from '../components/ProductItem'
 import { logger } from '@/lib/logger'
 
+export const dynamic = 'force-dynamic';
+
 export default async function Reagents() {
   // 从服务端获取数据
   const categories = await getReagentsData()
