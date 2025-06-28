@@ -1,9 +1,15 @@
 import { getReagentsData } from '@/lib/reagentsApi'
 import ProductItem from '../components/ProductItem'
+import { logger } from '@/lib/logger'
 
 export default async function Reagents() {
   // 从服务端获取数据
   const categories = await getReagentsData()
+
+  logger.info('Reagents page data loaded successfully', {
+    categoriesCount: categories.length,
+    timestamp: new Date().toISOString()
+  })
 
   return (
     <main className="min-h-screen p-8">

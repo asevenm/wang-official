@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { getPartners } from '../lib/partnersApi'
 import { getEquipmentByPage, getReagentsByPage } from '../lib/api'
+import { logger } from '../lib/logger'
 
 export default async function Home() {
   // 服务端请求合作单位
@@ -9,7 +10,13 @@ export default async function Home() {
   const equipments = await getEquipmentByPage()
   const reagents = await getReagentsByPage()
 
-  // 你也可以在这里服务端请求产品预览等其它数据
+  // 记录成功日志
+  logger.info('Home page data loaded successfully', {
+    partnersCount: partners.length,
+    equipmentsCount: equipments.length,
+    reagentsCount: reagents.length,
+    timestamp: new Date().toISOString()
+  })
 
   return (
     <main className="min-h-screen p-8">

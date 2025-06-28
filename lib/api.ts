@@ -63,7 +63,6 @@ export async function getEquipmentData(): Promise<GroupedInstrument[]> {
     const response = await serverHttp.get(`/instrument?typeType=1`);
     const data = response.data
     const groupedData = groupInstrumentsByType(data)
-    console.log('getEquipmentData groupedData',groupedData)
     return groupedData
 
   } catch(e) {
@@ -165,7 +164,6 @@ export async function getEquipmentByPage(page = 1, pageSize = 3): Promise<Instru
     },
     typeType: 1
     })
-    console.log('equipment response.data',response.data)
     return response.data.list
   } catch(e) {
     return []
@@ -182,7 +180,7 @@ export async function getReagentsByPage(page = 1, pageSize = 3): Promise<Instrum
     },
     typeType: 2
   })
-    console.log('reagents response.data',response.data)
+
     return response.data.list
   } catch(e) {
     return []

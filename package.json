@@ -20,12 +20,14 @@
     "react": "^18",
     "react-dom": "^18",
     "react-icons": "^4.11.0",
-    "swiper": "^11.0.3"
+    "swiper": "^11.0.3",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/winston": "^2.4.4",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.0.1",
