@@ -18,7 +18,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const [error, setError] = useState<string | null>(null)
   const searchRef = useRef<HTMLInputElement>(null)
   const resultsRef = useRef<HTMLDivElement>(null)
-  console.log('searchResults', searchResults)
+  // console.log('searchResults', searchResults)
 
   const categoryColors = {
     equipment: 'text-blue-600 bg-blue-50',

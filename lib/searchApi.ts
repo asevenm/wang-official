@@ -1,5 +1,44 @@
 import { http } from '@/lib/request';
 
+const cache = new Map<string, { data: any, timestamp: number }>();
+const CACHE_DURATION = 5 * 60 * 1000; // 5分钟缓存
+
+function getCached<T>(key: string): T | null {
+  const cached = cache.get(key);
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+    return cached.data;
+  }
+  cache.delete(key);
+  return null;
+}
+
+function setCache(key: string, data: any): void {
+  cache.set(key, { data, timestamp: Date.now() });
+}
+
+let debounceTimer: NodeJS.Timeout | null = null;
+
+function debounce<T extends (...args: any[]) => any>(
+  func: T,
+  delay: number
+): (...args: Parameters<T>) => Promise<ReturnType<T>> {
+  return (...args: Parameters<T>) => {
+    return new Promise<ReturnType<T>>((resolve, reject) => {
+      if (debounceTimer) {
+        clearTimeout(debounceTimer);
+      }
+      debounceTimer = setTimeout(async () => {
+        try {
+          const result = await func(...args);
+          resolve(result);
+        } catch (error) {
+          reject(error);
+        }
+      }, delay);
+    });
+  };
+}
+
 export interface SearchResult {
   id: string
   title: string
@@ -19,91 +58,109 @@ export interface SearchResponse {
 
 // 搜索仪器设备
 async function searchInstruments(query: string): Promise<SearchResult[]> {
-  try {
-    const [equipmentResponse, reagentsResponse] = await Promise.all([
-      http.get(`/instrument?typeType=1`),
-      http.get(`/instrument?typeType=2`)
-    ])
-    
-    const allInstruments = [...equipmentResponse.data, ...reagentsResponse.data]
-    const searchTerm = query.toLowerCase()
-    // console.log('allInstruments', allInstruments, searchTerm)
-    return allInstruments
-      .filter((item: any) => 
-        item.name?.toLowerCase().includes(searchTerm) ||
-        item.desc?.toLowerCase().includes(searchTerm) ||
-        item.type?.name?.toLowerCase().includes(searchTerm)
-      )
-      .map((item: any) => ({
-        id: item.id.toString(),
-        title: item.name || '未知设备',
-        content: item.desc || '暂无描述',
-        path: item.type?.typeType === 1 ? `/equipment/${item.id}` : `/reagents/${item.id}`,
-        category: item.type?.typeType === 1 ? 'equipment' as const : 'reagents' as const,
-        icon: item.type?.typeType === 1 ? '🔬' : '🧪',
-        type: item.type?.name,
-        images: item.images || [],
-        createTime: item.createTime
-      }))
-  } catch (error) {
-    console.error('Error searching instruments:', error)
-    return []
+  const cacheKey = `instruments`;
+  let allInstruments = getCached<any[]>(cacheKey);
+  
+  if (!allInstruments) {
+    try {
+      const [equipmentResponse, reagentsResponse] = await Promise.all([
+        http.get(`/instrument?typeType=1`),
+        http.get(`/instrument?typeType=2`)
+      ]);
+      
+      allInstruments = [...equipmentResponse.data, ...reagentsResponse.data];
+      setCache(cacheKey, allInstruments);
+    } catch (error) {
+      console.error('Error searching instruments:', error);
+      return [];
+    }
   }
+  
+  const searchTerm = query.toLowerCase();
+  return allInstruments
+    .filter((item: any) => 
+      item.name?.toLowerCase().includes(searchTerm) ||
+      item.desc?.toLowerCase().includes(searchTerm) ||
+      item.type?.name?.toLowerCase().includes(searchTerm)
+    )
+    .map((item: any) => ({
+      id: item.id.toString(),
+      title: item.name || '未知设备',
+      content: item.desc || '暂无描述',
+      path: item.type?.typeType === 1 ? `/equipment/${item.id}` : `/reagents/${item.id}`,
+      category: item.type?.typeType === 1 ? 'equipment' as const : 'reagents' as const,
+      icon: item.type?.typeType === 1 ? '🔬' : '🧪',
+      type: item.type?.name,
+      images: item.images || [],
+      createTime: item.createTime
+    }));
 }
 
 // 搜索代理品牌
 async function searchAgents(query: string): Promise<SearchResult[]> {
-  try {
-    const response = await http.get('/agent-brand')
-    const agents = response.data || []
-    const searchTerm = query.toLowerCase()
-    
-    return agents
-      .filter((item: any) => 
-        item.name?.toLowerCase().includes(searchTerm) ||
-        item.description?.toLowerCase().includes(searchTerm)
-      )
-      .map((item: any) => ({
-        id: item.id.toString(),
-        title: item.name || '未知品牌',
-        content: item.description || '暂无描述',
-        path: `/home`,
-        category: 'agents' as const,
-        icon: '🏭',
-        createTime: item.createTime
-      }))
-  } catch (error) {
-    console.error('Error searching agents:', error)
-    return []
+  const cacheKey = 'agents';
+  let agents = getCached<any[]>(cacheKey);
+  
+  if (!agents) {
+    try {
+      const response = await http.get('/agent-brand');
+      agents = response.data || [];
+      setCache(cacheKey, agents);
+    } catch (error) {
+      console.error('Error searching agents:', error);
+      return [];
+    }
   }
+  
+  const searchTerm = query.toLowerCase();
+  return agents
+    .filter((item: any) => 
+      item.name?.toLowerCase().includes(searchTerm) ||
+      item.description?.toLowerCase().includes(searchTerm)
+    )
+    .map((item: any) => ({
+      id: item.id.toString(),
+      title: item.name || '未知品牌',
+      content: item.description || '暂无描述',
+      path: `/home`,
+      category: 'agents' as const,
+      icon: '🏭',
+      createTime: item.createTime
+    }));
 }
 
 // 搜索消息/技术分享
 async function searchMessages(query: string): Promise<SearchResult[]> {
-  try {
-    const response = await http.get('/message')
-    const messages = response.data || []
-    const searchTerm = query.toLowerCase()
-    
-    return messages
-      .filter((item: any) => 
-        item.title?.toLowerCase().includes(searchTerm) ||
-        item.content?.toLowerCase().includes(searchTerm)
-      )
-      .slice(0, 10) // 限制结果数量
-      .map((item: any) => ({
-        id: item.id.toString(),
-        title: item.title || '未知标题',
-        content: item.content || '暂无内容',
-        path: `/blog/${item.id}`,
-        category: 'blog' as const,
-        icon: '📝',
-        createTime: item.createTime
-      }))
-  } catch (error) {
-    console.error('Error searching messages:', error)
-    return []
+  const cacheKey = 'messages';
+  let messages = getCached<any[]>(cacheKey);
+  
+  if (!messages) {
+    try {
+      const response = await http.get('/message');
+      messages = response.data || [];
+      setCache(cacheKey, messages);
+    } catch (error) {
+      console.error('Error searching messages:', error);
+      return [];
+    }
   }
+  
+  const searchTerm = query.toLowerCase();
+  return (messages || [])
+    .filter((item: any) => 
+      item.title?.toLowerCase().includes(searchTerm) ||
+      item.content?.toLowerCase().includes(searchTerm)
+    )
+    .slice(0, 10)
+    .map((item: any) => ({
+      id: item.id.toString(),
+      title: item.title || '未知标题',
+      content: item.content || '暂无内容',
+      path: `/blog/${item.id}`,
+      category: 'blog' as const,
+      icon: '📝',
+      createTime: item.createTime
+    }));
 }
 
 // 搜索静态页面
@@ -151,9 +208,9 @@ function searchStaticPages(query: string): SearchResult[] {
 }
 
 // 主搜索函数
-export async function searchContent(query: string): Promise<SearchResponse> {
-  if (!query || query.trim().length < 1) {
-    return { results: [], total: 0 }
+async function _searchContent(query: string): Promise<SearchResponse> {
+  if (!query || query.trim().length < 2) {
+    return { results: [], total: 0 };
   }
 
   try {
@@ -167,39 +224,36 @@ export async function searchContent(query: string): Promise<SearchResponse> {
       searchAgents(query),
       searchMessages(query),
       Promise.resolve(searchStaticPages(query))
-    ])
-    console.log('instruments', instruments)
-    console.log('agents', agents)
-    console.log('messages', messages)
-    console.log('staticPages', staticPages)
+    ]);
 
     const allResults = [
       ...instruments,
       ...agents,
       ...messages,
       ...staticPages
-    ].slice(0, 20) // 限制总结果数量
+    ].slice(0, 20);
 
-    // 按相关性排序 (标题匹配优先)
     const sortedResults = allResults.sort((a, b) => {
-      const queryLower = query.toLowerCase()
-      const aTitle = a.title.toLowerCase().includes(queryLower)
-      const bTitle = b.title.toLowerCase().includes(queryLower)
+      const queryLower = query.toLowerCase();
+      const aTitle = a.title.toLowerCase().includes(queryLower);
+      const bTitle = b.title.toLowerCase().includes(queryLower);
       
-      if (aTitle && !bTitle) return -1
-      if (!aTitle && bTitle) return 1
-      return 0
-    })
+      if (aTitle && !bTitle) return -1;
+      if (!aTitle && bTitle) return 1;
+      return 0;
+    });
 
     return {
       results: sortedResults,
       total: sortedResults.length
-    }
+    };
   } catch (error) {
-    console.error('Search error:', error)
-    return { results: [], total: 0 }
+    console.error('Search error:', error);
+    return { results: [], total: 0 };
   }
 }
+
+export const searchContent = debounce(_searchContent, 300);
 
 // 获取搜索建议（基于已有数据）
 export async function getSearchSuggestions(): Promise<string[]> {
