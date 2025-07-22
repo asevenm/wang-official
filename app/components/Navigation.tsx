@@ -1,27 +1,14 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import SearchModal from './SearchModal'
 
 export default function Navigation() {
   const pathname = usePathname()
-  const router = useRouter()
   const [isSearchOpen, setIsSearchOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [searchResults, setSearchResults] = useState<any[]>([])
-  const [showResults, setShowResults] = useState(false)
-
-  // 站内内容数据（实际项目中可能需要从API获取或使用静态数据）
-  const siteContent = [
-    { title: '仪器设备 - 显微镜', path: '/equipment/microscopes', content: '高精度显微镜设备，适用于各类生物样本观察' },
-    { title: '仪器设备 - PCR仪', path: '/equipment/pcr', content: '专业PCR扩增仪，满足分子生物学实验需求' },
-    { title: '试剂耗材 - 培养基', path: '/reagents/medium', content: '各类细胞培养基，保证细胞培养最佳状态' },
-    { title: '技术服务 - 基因测序', path: '/services/sequencing', content: '提供高通量基因测序服务，快速准确' },
-    { title: '技术分享 - PCR技术原理', path: '/blog/pcr-principles', content: 'PCR技术原理及应用详解' },
-    // 可以添加更多内容
-  ]
 
   const navigation = [
     { name: '首页', href: '/' },
@@ -32,52 +19,17 @@ export default function Navigation() {
     { name: '联系我们', href: '/contact' },
   ]
 
-  // 搜索内容变化时进行模糊匹配
+  // 全局键盘快捷键 (Cmd+K / Ctrl+K)
   useEffect(() => {
-    if (searchQuery.trim().length > 1) {
-      const query = searchQuery.toLowerCase()
-      const results = siteContent.filter(item => 
-        item.title.toLowerCase().includes(query) || 
-        item.content.toLowerCase().includes(query)
-      )
-      setSearchResults(results)
-      setShowResults(true)
-    } else {
-      setShowResults(false)
-    }
-  }, [searchQuery])
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (searchQuery.trim()) {
-      // 如果有搜索结果且用户提交了搜索，跳转到第一个结果
-      if (searchResults.length > 0) {
-        router.push(searchResults[0].path)
-      } else {
-        // 如果没有结果，可以跳转到搜索结果页面
-        router.push(`/search?q=${encodeURIComponent(searchQuery)}`)
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setIsSearchOpen(true)
       }
-      setIsSearchOpen(false)
-      setShowResults(false)
     }
-  }
 
-  const handleResultClick = (path: string) => {
-    router.push(path)
-    setIsSearchOpen(false)
-    setShowResults(false)
-  }
-
-  // 点击页面其他区域关闭搜索结果
-  useEffect(() => {
-    const handleClickOutside = () => {
-      setShowResults(false)
-    }
-    
-    document.addEventListener('click', handleClickOutside)
-    return () => {
-      document.removeEventListener('click', handleClickOutside)
-    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
   }, [])
 
   return (
@@ -114,56 +66,20 @@ export default function Navigation() {
               </div>
             </div>
 
-            {/* Search Icon and Form */}
-            <div className="flex items-center">
-              {isSearchOpen ? (
-                <div className="relative" onClick={(e) => e.stopPropagation()}>
-                  <form onSubmit={handleSearch} className="relative">
-                    <input
-                      type="text"
-                      placeholder="搜索..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="border rounded-md py-1 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
-                      autoFocus
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setIsSearchOpen(false)}
-                      className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  </form>
-                  
-                  {/* 搜索结果下拉框 */}
-                  {showResults && searchResults.length > 0 && (
-                    <div className="absolute top-full mt-1 w-64 bg-white border rounded-md shadow-lg z-20 max-h-60 overflow-y-auto">
-                      {searchResults.map((result, index) => (
-                        <div 
-                          key={index}
-                          className="p-2 hover:bg-gray-100 cursor-pointer border-b last:border-b-0"
-                          onClick={() => handleResultClick(result.path)}
-                        >
-                          <div className="font-medium text-sm">{result.title}</div>
-                          <div className="text-xs text-gray-500 truncate">{result.content}</div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <button
-                  onClick={() => setIsSearchOpen(true)}
-                  className="p-2 text-gray-400 hover:text-gray-500 focus:outline-none"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </button>
-              )}
+            {/* Search */}
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => setIsSearchOpen(true)}
+                className="group flex items-center space-x-2 px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <span className="hidden sm:inline">搜索</span>
+                <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 text-xs text-gray-400 bg-gray-200 rounded">
+                  ⌘K
+                </kbd>
+              </button>
             </div>
 
             {/* Mobile menu button */}
@@ -217,8 +133,12 @@ export default function Navigation() {
           </div>
         </div>
       </nav>
+
       {/* 添加一个占位div，防止内容被固定导航栏遮挡 */}
       <div className="h-16"></div>
+
+      {/* Search Modal */}
+      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </>
   )
 }
