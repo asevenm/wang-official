@@ -179,15 +179,14 @@ export default function Contact() {
       </div>
 
       {/* 地图区域 */}
-      <section className="mt-8">
+      {/* <section className="mt-8">
         <h2 className="text-2xl font-bold mb-6">公司位置</h2>
         <div className="w-full h-96 bg-gray-200 rounded-lg">
-          {/* 这里可以嵌入地图组件 */}
           <div className="w-full h-full flex items-center justify-center text-gray-500">
             地图区域
           </div>
         </div>
-      </section>
+      </section> */}
     </main>
   );
 }

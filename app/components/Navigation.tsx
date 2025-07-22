@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 
 export default function Navigation() {
   const pathname = usePathname()
@@ -88,7 +89,7 @@ export default function Navigation() {
               {/* Logo */}
               <div className="flex-shrink-0 flex items-center">
                 <Link href="/" className="text-xl font-bold text-blue-600">
-                  上海雷鼠仪器仪表有限公司
+                  <Image src="/logo.png" alt="Logo" width={50} height={50} />
                 </Link>
               </div>
 
