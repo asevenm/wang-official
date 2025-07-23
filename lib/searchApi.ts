@@ -113,7 +113,7 @@ async function searchAgents(query: string): Promise<SearchResult[]> {
   }
   
   const searchTerm = query.toLowerCase();
-  return agents
+  return (agents || [])
     .filter((item: any) => 
       item.name?.toLowerCase().includes(searchTerm) ||
       item.description?.toLowerCase().includes(searchTerm)
@@ -122,7 +122,7 @@ async function searchAgents(query: string): Promise<SearchResult[]> {
       id: item.id.toString(),
       title: item.name || '未知品牌',
       content: item.description || '暂无描述',
-      path: `/home`,
+      path: `/`,
       category: 'agents' as const,
       icon: '🏭',
       createTime: item.createTime
