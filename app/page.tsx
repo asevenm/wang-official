@@ -219,9 +219,9 @@ export default async function Home() {
                     <Image
                       src={partner.icon}
                       alt={partner.name}
-                      width={50}
-                      height={30}
-                      className="object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300 max-h-[30px] max-w-[45px]"
+                      width={60}
+                      height={60}
+                      className="object-contain filter transition-all duration-300 max-h-[60px] max-w-[60px]"
                     />
                   ) : (
                     <div className="text-gray-600 font-medium text-xs text-center group-hover:text-gray-800 transition-colors leading-tight">
