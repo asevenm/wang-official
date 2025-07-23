@@ -209,7 +209,7 @@ export default async function Home() {
               </p>
             </div>
             
-            <div className="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-8 gap-4 max-w-6xl mx-auto">
+            <div className="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-8 gap-2 max-w-6xl mx-auto">
               {partners.map((partner: any) => (
                 <div 
                   key={partner.id} 
