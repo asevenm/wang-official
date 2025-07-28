@@ -65,7 +65,7 @@ export default function Contact() {
 
   return (
     <main className="min-h-screen p-8">
-      <h1 className="text-4xl font-bold mb-8">联系我们</h1>
+      {/* <h1 className="text-4xl font-bold mb-8">联系我们</h1> */}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* 联系信息 */}
@@ -74,20 +74,20 @@ export default function Contact() {
           <div className="space-y-4">
             <div>
               <h3 className="font-semibold mb-2">公司地址</h3>
-              <p className="text-gray-600">上海市浦东新区某某路123号</p>
+              <p className="text-gray-600">上海市闵行区元江路525号5幢1006室</p>
             </div>
             <div>
               <h3 className="font-semibold mb-2">联系电话</h3>
-              <p className="text-gray-600">021-12345678</p>
+              <p className="text-gray-600">19821668887</p>
             </div>
             <div>
               <h3 className="font-semibold mb-2">电子邮箱</h3>
-              <p className="text-gray-600">contact@example.com</p>
+              <p className="text-gray-600">sc19821668887@163.com</p>
             </div>
             <div>
               <h3 className="font-semibold mb-2">工作时间</h3>
               <p className="text-gray-600">周一至周五: 9:00 - 18:00</p>
-              <p className="text-gray-600">周六至周日: 休息</p>
+              {/* <p className="text-gray-600">周六至周日: 休息</p> */}
             </div>
           </div>
         </section>

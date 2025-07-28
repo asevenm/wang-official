@@ -1,50 +1,53 @@
+import Link from 'next/link'
+
 export default function Services() {
   const services = [
     {
-      title: '仪器设备维修',
-      description: '专业的仪器设备维修服务，确保您的设备始终保持最佳状态',
+      title: '实验技术服务',
+      description: '提供专业的实验技术支持和数据分析服务',
       features: [
-        '专业维修团队',
-        '快速响应服务',
-        '原厂配件更换',
-        '定期保养维护'
+        '电生理数据预处理',
+        '局部场电位数据分析 (LFP, EEG, ECOG)',
+        'spike数据分析',
+        'spike放电模式分析',
+        'spike功能连接性分析',
+        '神经元编码分析',
+        'spike-rhythm分析',
+        'Event-related分析',
+        '神经解码',
+        '数据分析系列培训课程'
       ]
     },
     {
       title: '仪器设备租赁',
-      description: '灵活的仪器设备租赁方案，满足您的临时需求',
+      description: '提供专业的仪器设备租赁服务',
       features: [
-        '多种设备可选',
-        '灵活租赁期限',
-        '专业技术支持',
-        '定期维护保养'
+        '小动物气体麻醉机',
+        '小动物呼吸机',
+        '脑立体定位仪'
       ]
     },
     {
-      title: '实验技术服务',
-      description: '提供全方位的实验技术支持和服务',
+      title: '仪器设备维修',
+      description: '专业的仪器设备维修保养服务',
       features: [
-        '实验方案设计',
-        '技术培训指导',
-        '实验过程咨询',
-        '数据分析支持'
+        '生物安全柜维修保养',
+        '超净台维护维修保养'
       ]
     },
     {
-      title: '资格认证',
-      description: '专业的资格认证服务，助力您的实验室达到行业标准',
+      title: '研发众筹',
+      description: '提供专业的研发众筹服务',
       features: [
-        '实验室认证咨询',
-        '质量体系建设',
-        '认证材料准备',
-        '认证过程辅导'
+          // 'CNAS实验动物机构认证服务',
+          // 'GLP, GCP, GMP, AAALAC认证服务'
       ]
     }
   ]
 
   return (
     <main className="min-h-screen p-8">
-      <h1 className="text-4xl font-bold mb-8">技术服务</h1>
+      {/* <h1 className="text-4xl font-bold mb-8">技术服务</h1> */}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {services.map((service, index) => (
@@ -62,9 +65,12 @@ export default function Services() {
                 </li>
               ))}
             </ul>
-            <button className="mt-6 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+            <Link 
+              href="/contact"
+              className="inline-block mt-6 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            >
               联系我们
-            </button>
+            </Link>
           </div>
         ))}
       </div>

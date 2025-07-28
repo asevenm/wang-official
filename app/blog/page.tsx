@@ -7,7 +7,7 @@ export default async function Blog() {
 
   return (
     <main className="min-h-screen p-8">
-      <h1 className="text-4xl font-bold mb-8">技术分享</h1>
+      {/* <h1 className="text-4xl font-bold mb-8">技术分享</h1> */}
 
       {articles.map((section, index) => (
         <section key={index} className="mb-12">
