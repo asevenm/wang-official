@@ -1,7 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { createMessage, CreateMessageDto } from '../../lib/messageApi'
+import { getCompany, Company } from '../../lib/companyApi'
 
 export default function Contact() {
   const [formData, setFormData] = useState<CreateMessageDto>({
@@ -12,6 +14,8 @@ export default function Contact() {
   })
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
+  const [companyInfo, setCompanyInfo] = useState<Company>({})
+  const [companyLoading, setCompanyLoading] = useState(true)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -20,6 +24,21 @@ export default function Contact() {
       [name]: value
     }))
   }
+
+  const loadCompanyInfo = async () => {
+    try {
+      const data = await getCompany()
+      setCompanyInfo(data)
+    } catch (error) {
+      console.error('Failed to load company info:', error)
+    } finally {
+      setCompanyLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    loadCompanyInfo()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -71,25 +90,59 @@ export default function Contact() {
         {/* 联系信息 */}
         <section className="bg-white rounded-lg shadow p-6">
           <h2 className="text-2xl font-bold mb-6">联系方式</h2>
-          <div className="space-y-4">
-            <div>
-              <h3 className="font-semibold mb-2">公司地址</h3>
-              <p className="text-gray-600">上海市闵行区元江路525号5幢1006室</p>
+          {companyLoading ? (
+            <div className="space-y-4">
+              <div className="animate-pulse">
+                <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                <div className="h-3 bg-gray-100 rounded"></div>
+              </div>
+              <div className="animate-pulse">
+                <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                <div className="h-3 bg-gray-100 rounded"></div>
+              </div>
+              <div className="animate-pulse">
+                <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                <div className="h-3 bg-gray-100 rounded"></div>
+              </div>
             </div>
-            <div>
-              <h3 className="font-semibold mb-2">联系电话</h3>
-              <p className="text-gray-600">19821668887</p>
+          ) : (
+            <div className="space-y-4">
+              {companyInfo.address && (
+                <div>
+                  <h3 className="font-semibold mb-2">公司地址</h3>
+                  <p className="text-gray-600">{companyInfo.address}</p>
+                </div>
+              )}
+              {companyInfo.phone && (
+                <div>
+                  <h3 className="font-semibold mb-2">联系电话</h3>
+                  <p className="text-gray-600">{companyInfo.phone}</p>
+                </div>
+              )}
+              {companyInfo.email && (
+                <div>
+                  <h3 className="font-semibold mb-2">电子邮箱</h3>
+                  <p className="text-gray-600">{companyInfo.email}</p>
+                </div>
+              )}
+              <div>
+                <h3 className="font-semibold mb-2">工作时间</h3>
+                <p className="text-gray-600">周一至周五: 9:00 - 18:00</p>
+              </div>
+              {companyInfo.wechatQrCode && (
+                <div>
+                  <h3 className="font-semibold mb-2">微信二维码</h3>
+                  <Image 
+                    src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/${companyInfo.wechatQrCode}`} 
+                    alt="微信二维码" 
+                    width={128}
+                    height={128}
+                    className="object-contain"
+                  />
+                </div>
+              )}
             </div>
-            <div>
-              <h3 className="font-semibold mb-2">电子邮箱</h3>
-              <p className="text-gray-600">sc19821668887@163.com</p>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-2">工作时间</h3>
-              <p className="text-gray-600">周一至周五: 9:00 - 18:00</p>
-              {/* <p className="text-gray-600">周六至周日: 休息</p> */}
-            </div>
-          </div>
+          )}
         </section>
 
         {/* 联系表单 */}
