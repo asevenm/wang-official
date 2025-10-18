@@ -14,6 +14,18 @@ const nextConfig = {
         port: '',
         pathname: '/img/**',
       },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3001',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'wang-server',
+        port: '3001',
+        pathname: '/uploads/**',
+      },
     ],
   },
   async rewrites() {

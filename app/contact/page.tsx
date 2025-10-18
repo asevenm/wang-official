@@ -107,12 +107,12 @@ export default function Contact() {
             </div>
           ) : (
             <div className="space-y-4">
-              {companyInfo.address && (
+              {/* {companyInfo.address && (
                 <div>
                   <h3 className="font-semibold mb-2">公司地址</h3>
                   <p className="text-gray-600">{companyInfo.address}</p>
                 </div>
-              )}
+              )} */}
               {companyInfo.phone && (
                 <div>
                   <h3 className="font-semibold mb-2">联系电话</h3>

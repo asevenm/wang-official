@@ -23,6 +23,8 @@ export interface InstrumentItem {
   name: string
   desc: string
   region: string
+  workingPrinciple?: string
+  applicationScenes?: string[]
   createTime: string
   images?: {id: number, url: string}[]
   models?: ModelItem[]

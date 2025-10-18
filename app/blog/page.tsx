@@ -42,7 +42,7 @@ export default async function Blog() {
       ))}
 
       {/* 订阅区域 */}
-      <section className="mt-12 bg-blue-50 rounded-lg p-8">
+      {/* <section className="mt-12 bg-blue-50 rounded-lg p-8">
         <h2 className="text-2xl font-bold mb-4">订阅我们</h2>
         <p className="text-gray-600 mb-6">
           关注我们的公众号和视频号，获取最新技术资讯和行业动态
@@ -59,7 +59,7 @@ export default async function Blog() {
             <p className="text-sm text-gray-600">扫码关注视频号</p>
           </div>
         </div>
-      </section>
+      </section> */}
     </main>
   )
 }

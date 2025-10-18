@@ -1,4 +1,4 @@
-import { request } from './request'
+import { http } from './request'
 
 export interface Company {
   id?: number
@@ -12,9 +12,7 @@ export interface Company {
 
 export async function getCompany(): Promise<Company> {
   try {
-    const response = await request('/company', {
-      method: 'GET',
-    })
+    const response = await http.get('/company');
     return response.data || {}
   } catch (error) {
     console.error('Failed to fetch company info:', error)

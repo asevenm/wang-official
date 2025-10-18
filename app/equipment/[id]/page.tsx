@@ -25,9 +25,10 @@ export default async function EquipmentDetail({ params }: { params: { id: string
     ]
 
   const placeholderPrinciple =
+    equipment.workingPrinciple ||
     '系统通过对目标部位压力的动态调控与光学/电学信号采集，提取脉搏波等特征并进行算法分析，从而得到关键生理参数。该方法已在多种动物模型中验证，能够协助研究人员快速、准确地完成测量。参考展示样式见站点：小动物无创血压计。'
 
-  const placeholderScenes = [
+  const placeholderScenes = (equipment.applicationScenes?.length || 0) > 0 ? equipment.applicationScenes! : [
     '药效学研究：评估给药前后关键指标变化，提供可靠数据支持',
     '病症模型研究：持续监测指标变化，辅助分析发病机制与进展',
     '教学演示：用于方法演示和数据分析流程教学',
@@ -138,61 +139,64 @@ export default async function EquipmentDetail({ params }: { params: { id: string
         </section>
 
         <section id="section-more" className="scroll-mt-[64px] space-y-6 mt-12">
-        </section>
-
-        {/* <section id="section-description" className="scroll-mt-[64px] space-y-6 mt-12">
           <h2 className="text-xl font-semibold">工作原理</h2>
           <p className="text-gray-700 leading-7">
-            {placeholderPrinciple}（参考页面：
-            <a
-              className="text-blue-600 underline"
-              href="https://www.yuyanbio.com/xueliu/315.html"
-              target="_blank"
-              rel="noreferrer"
-            >
-              小动物无创血压计
-            </a>
-            ）
+            {placeholderPrinciple}
+            {!equipment.workingPrinciple && (
+              <>
+                （参考页面：
+                <a
+                  className="text-blue-600 underline"
+                  href="https://www.yuyanbio.com/xueliu/315.html"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  小动物无创血压计
+                </a>
+                ）
+              </>
+            )}
           </p>
-        </section> */}
-
-        {/* <section id="section-more" className="scroll-mt-[64px] space-y-6 mt-12">
-          <h2 className="text-xl font-semibold">技术规格</h2>
-          {hasModels ? (
-            <div className="space-y-8">
-              {equipment.models!.map((model) => (
-                <div key={model.id}>
-                  <h3 className="text-lg font-semibold mb-2">{model.name}</h3>
-                  <div className="border rounded-lg overflow-hidden">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <tbody className="bg-white divide-y divide-gray-200">
-                        {model.params.map((spec, index) => (
-                          <tr key={index}>
-                            <td className="px-6 py-3 text-sm font-medium text-gray-900 bg-gray-50 w-1/3">{spec.name}</td>
-                            <td className="px-6 py-3 text-sm text-gray-700">{spec.value}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="border rounded-lg overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200">
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {exampleSpecs.map((s, i) => (
-                    <tr key={i}>
-                      <td className="px-6 py-3 text-sm font-medium text-gray-900 bg-gray-50 w-1/3">{s.name}</td>
-                      <td className="px-6 py-3 text-sm text-gray-700">{s.value}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          
+          {placeholderScenes.length > 0 && (
+            <div className="mt-8">
+              <h3 className="text-lg font-semibold mb-4">应用场景</h3>
+              <ul className="space-y-3">
+                {placeholderScenes.map((scene, index) => (
+                  <li key={index} className="flex items-start">
+                    <span className="inline-block w-2 h-2 rounded-full bg-blue-600 mt-2 mr-3 flex-shrink-0"></span>
+                    <span className="text-gray-700 leading-6">{scene}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
-        </section> */}
+
+          {hasModels && (
+            <div className="mt-8">
+              <h3 className="text-lg font-semibold mb-4">技术规格</h3>
+              <div className="space-y-6">
+                {equipment.models!.map((model) => (
+                  <div key={model.id}>
+                    <h4 className="text-md font-semibold mb-2">{model.name}</h4>
+                    <div className="border rounded-lg overflow-hidden">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {model.params.map((spec, index) => (
+                            <tr key={index}>
+                              <td className="px-6 py-3 text-sm font-medium text-gray-900 bg-gray-50 w-1/3">{spec.name}</td>
+                              <td className="px-6 py-3 text-sm text-gray-700">{spec.value}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
       </div>
     </main>
   )
