@@ -55,7 +55,7 @@ export default async function EquipmentDetail({ params }: { params: { id: string
               clipRule="evenodd"
             />
           </svg>
-          返回
+          返回仪器设备列表
         </Link>
 
         {/* 顶部概览卡片 */}
