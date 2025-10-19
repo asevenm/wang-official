@@ -1,45 +1,93 @@
-import { getBlogArticles } from '@/lib/blogApi'
-import Link from 'next/link'
+'use client'
 
-export default async function Blog() {
-  // 从服务端获取数据
-  const articles = await getBlogArticles()
+import { getBlogArticles, Article } from '@/lib/blogApi'
+import Link from 'next/link'
+import { useState, useEffect } from 'react'
+import Pagination from '@/components/Pagination'
+
+export default function Blog() {
+  const [allArticles, setAllArticles] = useState<Article[]>([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const [loading, setLoading] = useState(true)
+  const articlesPerPage = 6
+
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const sections = await getBlogArticles()
+        // 将所有分类的文章合并为一个数组
+        const flattenedArticles = sections.flatMap(section => section.items)
+        setAllArticles(flattenedArticles)
+      } catch (error) {
+        console.error('获取文章数据失败:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchArticles()
+  }, [])
+
+  // 计算分页数据
+  const totalPages = Math.ceil(allArticles.length / articlesPerPage)
+  const startIndex = (currentPage - 1) * articlesPerPage
+  const endIndex = startIndex + articlesPerPage
+  const currentArticles = allArticles.slice(startIndex, endIndex)
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+    // 滚动到页面顶部
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  if (loading) {
+    return (
+      <main className="min-h-screen p-8">
+        <div className="flex justify-center items-center min-h-[400px]">
+          <div className="text-lg text-gray-600">加载中...</div>
+        </div>
+      </main>
+    )
+  }
 
   return (
     <main className="min-h-screen p-8">
       {/* <h1 className="text-4xl font-bold mb-8">技术分享</h1> */}
 
-      {articles.map((section, index) => (
-        <section key={index} className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">{section.type}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {section.items.map((item, itemIndex) => (
-              <div key={itemIndex} className="bg-white rounded-lg shadow overflow-hidden">
-                <div className="p-6">
-                  <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-                  <p className="text-gray-600 mb-4">{item.summary}</p>
-                  <div className="flex items-center justify-between text-sm text-gray-500">
-                    {'date' in item && <span>{item.date}</span>}
-                    {'duration' in item && (
-                      <div className="flex items-center space-x-2">
-                        <span>时长: {item.duration}</span>
-                        <span>播放: {item.views}</span>
-                      </div>
-                    )}
-                    {'category' in item && <span>{item.category}</span>}
-                    {'author' in item && <span>作者: {item.author}</span>}
+      {/* 文章列表 */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {currentArticles.map((item, index) => (
+          <div key={item.id} className="bg-white rounded-lg shadow overflow-hidden">
+            <div className="p-6">
+              <h3 className="text-xl font-bold mb-2">{item.title}</h3>
+              <p className="text-gray-600 mb-4">{item.summary}</p>
+              <div className="flex items-center justify-between text-sm text-gray-500">
+                {'date' in item && <span>{item.date}</span>}
+                {'duration' in item && (
+                  <div className="flex items-center space-x-2">
+                    <span>时长: {item.duration}</span>
+                    <span>播放: {item.views}</span>
                   </div>
-                  <Link href={`/blog/${item.id}`}>
-                    <button className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
-                      阅读更多
-                    </button>
-                  </Link>
-                </div>
+                )}
+                {'category' in item && <span>{item.category}</span>}
+                {'author' in item && <span>作者: {item.author}</span>}
               </div>
-            ))}
+              <Link href={`/blog/${item.id}`}>
+                <button className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+                  阅读更多
+                </button>
+              </Link>
+            </div>
           </div>
-        </section>
-      ))}
+        ))}
+      </div>
+
+      {/* 分页组件 */}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
 
       {/* 订阅区域 */}
       {/* <section className="mt-12 bg-blue-50 rounded-lg p-8">
