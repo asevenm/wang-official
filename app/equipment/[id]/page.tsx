@@ -76,9 +76,9 @@ export default async function EquipmentDetail({ params }: { params: { id: string
                 >
                   联系咨询
                 </Link>
-                <button className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+                {/* <button className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">
                   技术资料
-                </button>
+                </button> */}
               </div>
             </div>
           </div>
@@ -153,7 +153,7 @@ export default async function EquipmentDetail({ params }: { params: { id: string
                         <span className="text-blue-600 font-semibold text-sm">{idx + 1}</span>
                       </div>
                       <div>
-                        <div className="font-semibold text-gray-900 mb-2">特点 {idx + 1}</div>
+                        {/* <div className="font-semibold text-gray-900 mb-2">特点 {idx + 1}</div> */}
                         <div className="text-gray-700 leading-6">{item}</div>
                       </div>
                     </div>
@@ -174,7 +174,7 @@ export default async function EquipmentDetail({ params }: { params: { id: string
                           <span className="text-green-600 font-semibold text-sm">{index + 1}</span>
                         </div>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">应用场景 {index + 1}</h4>
+                          {/* <h4 className="font-semibold text-gray-900 mb-2">应用场景 {index + 1}</h4> */}
                           <p className="text-gray-700 text-sm leading-6">{scene}</p>
                         </div>
                       </div>
