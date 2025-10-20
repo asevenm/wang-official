@@ -50,6 +50,24 @@ export default function Blog() {
     )
   }
 
+  // 无数据状态
+  if (allArticles.length === 0) {
+    return (
+      <main className="min-h-screen p-8">
+        <div className="flex flex-col justify-center items-center min-h-[400px] text-center">
+          <div className="text-6xl text-gray-300 mb-4">📝</div>
+          <h2 className="text-2xl font-bold text-gray-600 mb-2">暂无文章</h2>
+          <p className="text-gray-500 mb-6">目前还没有发布任何文章，请稍后再来查看</p>
+          <Link href="/">
+            <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+              返回首页
+            </button>
+          </Link>
+        </div>
+      </main>
+    )
+  }
+
   return (
     <main className="min-h-screen p-8">
       {/* <h1 className="text-4xl font-bold mb-8">技术分享</h1> */}
