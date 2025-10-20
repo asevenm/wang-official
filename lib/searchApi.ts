@@ -44,7 +44,7 @@ export interface SearchResult {
   title: string
   content: string
   path: string
-  category: 'equipment' | 'reagents' | 'services' | 'blog' | 'pages' | 'agents'
+  category: 'equipment' | 'reagents' | 'services' | 'blog' | 'pages' | 'agents' | 'service-categories' | 'published-articles'
   icon: string
   type?: string
   images?: { id: number; url: string }[]
@@ -125,6 +125,74 @@ async function searchAgents(query: string): Promise<SearchResult[]> {
       path: `/`,
       category: 'agents' as const,
       icon: '🏭',
+      createTime: item.createTime
+    }));
+}
+
+// 搜索技术服务分类
+async function searchServiceCategories(query: string): Promise<SearchResult[]> {
+  const cacheKey = 'service-categories';
+  let serviceCategories = getCached<any[]>(cacheKey);
+
+  if (!serviceCategories) {
+    try {
+      const response = await http.get('/service-categories');
+      serviceCategories = response.data || [];
+      setCache(cacheKey, serviceCategories);
+    } catch (error) {
+      console.error('Error searching service categories:', error);
+      return [];
+    }
+  }
+
+  const searchTerm = query.toLowerCase();
+  return (serviceCategories || [])
+    .filter((item: any) =>
+      item.name?.toLowerCase().includes(searchTerm) ||
+      item.description?.toLowerCase().includes(searchTerm)
+    )
+    .map((item: any) => ({
+      id: item.id.toString(),
+      title: item.name || '未知服务',
+      content: item.description || '暂无描述',
+      path: `/services/category/${item.id}`,
+      category: 'service-categories' as const,
+      icon: '🛠️',
+      createTime: item.createTime
+    }));
+}
+
+// 搜索技术分享内容
+async function searchPublishedArticles(query: string): Promise<SearchResult[]> {
+  const cacheKey = 'published-articles';
+  let publishedArticles = getCached<any[]>(cacheKey);
+
+  if (!publishedArticles) {
+    try {
+      const response = await http.get('/articles/published');
+      publishedArticles = response.data || [];
+      setCache(cacheKey, publishedArticles);
+    } catch (error) {
+      console.error('Error searching published articles:', error);
+      return [];
+    }
+  }
+
+  const searchTerm = query.toLowerCase();
+  return (publishedArticles || [])
+    .filter((item: any) =>
+      item.title?.toLowerCase().includes(searchTerm) ||
+      item.content?.toLowerCase().includes(searchTerm) ||
+      item.summary?.toLowerCase().includes(searchTerm)
+    )
+    .slice(0, 10) // 限制返回数量
+    .map((item: any) => ({
+      id: item.id.toString(),
+      title: item.title || '未知文章',
+      content: item.summary || item.content?.substring(0, 100) || '暂无内容',
+      path: `/articles/${item.id}`,
+      category: 'published-articles' as const,
+      icon: '📚',
       createTime: item.createTime
     }));
 }
@@ -216,12 +284,16 @@ async function _searchContent(query: string): Promise<SearchResponse> {
   try {
     const [
       instruments,
-      agents, 
+      agents,
+      serviceCategories,
+      publishedArticles,
       messages,
       staticPages
     ] = await Promise.all([
       searchInstruments(query),
       searchAgents(query),
+      searchServiceCategories(query),
+      searchPublishedArticles(query),
       searchMessages(query),
       Promise.resolve(searchStaticPages(query))
     ]);
@@ -229,6 +301,8 @@ async function _searchContent(query: string): Promise<SearchResponse> {
     const allResults = [
       ...instruments,
       ...agents,
+      ...serviceCategories,
+      ...publishedArticles,
       ...messages,
       ...staticPages
     ].slice(0, 20);

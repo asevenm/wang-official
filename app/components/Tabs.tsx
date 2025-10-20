@@ -120,5 +120,3 @@ export default function Tabs({ tabs, initialKey, onChange, offset, stickyTop = 0
     </div>
   )
 }
-
-

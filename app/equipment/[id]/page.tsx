@@ -2,8 +2,8 @@ import { getEquipmentById, getEquipmentByPage } from '@/lib/api'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
-import Tabs from './Tabs'
-import ProductImageCarousel from './ProductImageCarousel'
+import Tabs from '../../components/Tabs'
+import ProductImageCarousel from '../../components/ProductImageCarousel'
 
 export default async function EquipmentDetail({ params }: { params: { id: string } }) {
   // 并行获取当前设备信息和相关设备
