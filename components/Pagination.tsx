@@ -39,7 +39,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
   if (totalPages <= 1) return null
 
   return (
-    <div className="flex justify-center items-center space-x-2 mt-8">
+    <div className="flex justify-end items-center space-x-2 mt-8">
       {/* 上一页按钮 */}
       <button
         onClick={() => onPageChange(currentPage - 1)}

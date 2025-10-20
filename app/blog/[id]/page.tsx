@@ -87,7 +87,7 @@ export default async function ArticleDetail({ params }: { params: { id: string }
         </div>
         
         {/* 分享和评论区 */}
-        <div className="mt-12 border-t pt-8">
+        {/* <div className="mt-12 border-t pt-8">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-xl font-bold">分享文章</h2>
             <div className="flex space-x-4">
@@ -127,7 +127,7 @@ export default async function ArticleDetail({ params }: { params: { id: string }
               </button>
             </form>
           </div>
-        </div>
+        </div> */}
         
         {/* 相关推荐 */}
         <div className="mt-12">

@@ -13,9 +13,9 @@ export default async function Equipment() {
   })
 
   return (
-    <div className="min-h-screen flex">
-      <CategoryNavigation categories={equipmentCategories} />
-      <main className="flex-1 p-8">
+    <div className="min-h-screen">
+      <CategoryNavigation categories={equipmentCategories} type="equipment" />
+      <main className="ml-80 p-8">
         {equipmentCategories.map((category) => (
           <section key={category.typeId} className="mb-12">
             <h2 className="text-2xl font-bold mb-6">{category.typeName}</h2>

@@ -56,7 +56,7 @@ export default function CategoryNavigation({ categories, onCategorySelect, type 
   }))
 
   return (
-    <div className="w-80 bg-gradient-to-b from-slate-50 to-white border-r border-gray-200 shadow-lg" style={{ height: 'calc(100vh - 64px)' }}>
+    <div className="fixed left-0 top-16 w-80 bg-gradient-to-b from-slate-50 to-white border-r border-gray-200 shadow-lg z-40" style={{ height: 'calc(100vh - 64px)' }}>
       {/* Search bar */}
       <div className="p-3 border-b border-gray-200 bg-white/80 backdrop-blur-sm">
         <div className="relative">
