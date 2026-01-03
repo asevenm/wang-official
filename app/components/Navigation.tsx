@@ -15,7 +15,7 @@ export default function Navigation() {
     { name: '首页', href: '/' },
     { name: '仪器设备', href: '/equipment' },
     { name: '试剂耗材', href: '/reagents' },
-    { name: '技术服务', href: '/services' },
+    { name: '租赁服务', href: '/services' },
     { name: '技术分享', href: '/blog' },
     { name: '联系我们', href: '/contact' },
   ]

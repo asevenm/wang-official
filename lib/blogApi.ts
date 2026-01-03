@@ -1,3 +1,5 @@
+import { http } from './request';
+
 // 定义文章基础接口
 interface ArticleBase {
   id: string
@@ -64,20 +66,9 @@ const TYPE_MAPPING = {
 // 获取所有博客文章
 export async function getBlogArticles(): Promise<ArticleSection[]> {
   try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-    const res = await fetch(`${apiUrl}/articles/published`, {
-      next: { revalidate: 3600 },
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    });
+    const res = await http.get(`/articles/published`);
 
-    if (!res.ok) {
-      throw new Error(`获取博客数据失败: ${res.status}`);
-    }
-
-    const response = await res.json();
-    const backendArticles: BackendArticle[] = response.data || response;
+    const backendArticles: BackendArticle[] = res.data || res;
 
     // 按类型分组文章
     const groupedArticles: { [key: string]: Article[] } = {

@@ -183,10 +183,10 @@ export default async function Home() {
                   </svg>
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-purple-600 transition-colors">
-                  技术服务
+                  租赁服务
                 </h3>
                 <p className="text-gray-600 mb-6 leading-relaxed">
-                  专业的技术支持和服务，为您提供全方位解决方案
+                  专业的租赁服务，为您提供全方位解决方案
                 </p>
                 <div className="flex items-center text-purple-600 font-medium group-hover:text-purple-700 transition-colors">
                   <span>了解更多</span>

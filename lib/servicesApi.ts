@@ -50,8 +50,8 @@ export const servicesApi = {
     return http.get('/rental/products').then(response => response.data)
   },
 
-  getRentalNotices: (): Promise<any[]> => {
-    return http.get('/rental/notices').then(response => response.data)
+  getRentalProductById: (id: string): Promise<any> => {
+    return http.get(`/rental/products/${id}`).then(response => response.data)
   }
 }
 
