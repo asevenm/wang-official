@@ -17,6 +17,17 @@ export default function Contact() {
   const [companyInfo, setCompanyInfo] = useState<Company>({})
   const [companyLoading, setCompanyLoading] = useState(true)
 
+  const splitMultiValue = (value?: string | string[]) => {
+    if (!value) return []
+    if (Array.isArray(value)) {
+      return value.map(item => item.trim()).filter(Boolean)
+    }
+    return value
+      .split(/[\n,，;；]+/)
+      .map(item => item.trim())
+      .filter(Boolean)
+  }
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({
@@ -39,6 +50,10 @@ export default function Contact() {
   useEffect(() => {
     loadCompanyInfo()
   }, [])
+
+  const phoneList = splitMultiValue(companyInfo.phone)
+  const emailList = splitMultiValue(companyInfo.email)
+  const wechatQrCodeList = splitMultiValue(companyInfo.wechatQrCode)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -113,32 +128,45 @@ export default function Contact() {
                   <p className="text-gray-600">{companyInfo.address}</p>
                 </div>
               )} */}
-              {companyInfo.phone && (
+              {phoneList.length > 0 && (
                 <div>
                   <h3 className="font-semibold mb-2">联系电话</h3>
-                  <p className="text-gray-600">{companyInfo.phone}</p>
+                  <div className="space-y-1">
+                    {phoneList.map((phone, index) => (
+                      <p key={`${phone}-${index}`} className="text-gray-600">{phone}</p>
+                    ))}
+                  </div>
                 </div>
               )}
-              {companyInfo.email && (
+              {emailList.length > 0 && (
                 <div>
                   <h3 className="font-semibold mb-2">电子邮箱</h3>
-                  <p className="text-gray-600">{companyInfo.email}</p>
+                  <div className="space-y-1">
+                    {emailList.map((email, index) => (
+                      <p key={`${email}-${index}`} className="text-gray-600">{email}</p>
+                    ))}
+                  </div>
                 </div>
               )}
               <div>
                 <h3 className="font-semibold mb-2">工作时间</h3>
                 <p className="text-gray-600">周一至周五: 9:00 - 18:00</p>
               </div>
-              {companyInfo.wechatQrCode && (
+              {wechatQrCodeList.length > 0 && (
                 <div>
-                  <h3 className="font-semibold mb-2">微信二维码</h3>
-                  <Image 
-                    src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/${companyInfo.wechatQrCode}`} 
-                    alt="微信二维码" 
-                    width={128}
-                    height={128}
-                    className="object-contain"
-                  />
+                  <h3 className="font-semibold mb-2">请扫码加微信咨询</h3>
+                  <div className="flex flex-wrap gap-3">
+                    {wechatQrCodeList.map((fileName, index) => (
+                      <Image
+                        key={`${fileName}-${index}`}
+                        src={`/uploads/${encodeURIComponent(fileName)}`}
+                        alt={`微信二维码 ${index + 1}`}
+                        width={128}
+                        height={128}
+                        className="object-contain"
+                      />
+                    ))}
+                  </div>
                 </div>
               )}
             </div>

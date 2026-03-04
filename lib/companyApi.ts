@@ -3,9 +3,9 @@ import { http } from './request'
 export interface Company {
   id?: number
   address?: string
-  phone?: string
-  email?: string
-  wechatQrCode?: string
+  phone?: string | string[]
+  email?: string | string[]
+  wechatQrCode?: string | string[]
   createdAt?: string
   updatedAt?: string
 }
